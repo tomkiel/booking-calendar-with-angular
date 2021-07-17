@@ -1,0 +1,196 @@
+:host {
+    .reservation-calendar-content {
+        display: grid;
+        grid-template-columns: 18em auto;
+        height: 100vh;
+        width: 100%;
+        .properties-sidebar {
+            padding-top: calc(10em - 1px);
+            box-shadow: 0 0 80px 50px rgb(206, 213, 225, 0.2);
+            .reserve-houses {
+                display: flex;
+                flex-direction: column;
+                border-top: 1px solid rgb(221, 221, 221);
+                .single-propertie {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 1em;
+                    padding: 0.5em;
+                    border-bottom: 1px solid rgb(221, 221, 221);
+                    max-height: 5em;
+                    .propertie-img {
+                        picture {
+                            display: flex;
+                            img {
+                                width: 6em;
+                                height: calc(5em - (0.5em + 0.5em));
+                                object-fit: cover;
+                                object-position: center;
+                                border-radius: 0.2em;
+                            }
+                        }
+                    }
+
+                    span {
+                        font-size: 1rem;
+                        font-weight: 600;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        max-width: 150px;
+                    }
+                }
+            }
+        }
+        .properties-table-calendar {
+            overflow-x: scroll;
+            .table-calendar-content {
+                .calendar-months {
+                    display: flex;
+                    height: 10em;
+                    .single-month {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-end;
+                        align-items: center;
+
+                        h4 {
+                            margin: 0;
+                            font-size: 1.2rem;
+                            font-weight: 600;
+                            padding: 1em 0;
+                        }
+                    }
+                }
+                .calendar-header,
+                .rendered-items {
+                    width: 100%;
+                    display: flex;
+                    .calendar-day,
+                    .dts-select-item,
+                    .selected {
+                        flex: 1;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border: none;
+                        border-bottom: 1px solid rgb(221, 221, 221);
+                        border-right: 1px solid rgb(221, 221, 221);
+                        font-size: 1em;
+                        color: rgb(112, 112, 112);
+                        min-width: 7em;
+                        height: 4em;
+                        text-align: center;
+                        box-sizing: border-box;
+                        span {
+                            color: rgb(112, 112, 112);
+                            font-size: 1em;
+                        }
+                    }
+                }
+                .calendar-header {
+                    .calendar-day {
+                        border-top: 1px solid rgba(208, 208, 208, 1);
+                        border-right: 1px solid rgba(208, 208, 208, 1);
+                        border-bottom: 4px solid rgba(208, 208, 208, 0.3);
+                        flex-direction: column;
+                        &.active {
+                            background-color: rgb(0, 175, 175, 1);;
+                            span {
+                                color: #fff;
+                            }
+                        }
+                    }
+                }
+                .rendered-items {
+                    .calendar-day {
+                        height: 5em;
+                        position: relative;
+                        .selected-bar {
+                            display: none;
+                        }
+                        &.dts-select-item {
+                            cursor: crosshair;
+                            &.selected {
+                                box-shadow: none;
+                                justify-content: flex-end;
+                                align-items: flex-start;
+                                padding-right: 0.3em;
+                                padding-top: 0.3em;
+                                .selected-bar {
+                                    display: block;
+                                    position: absolute;
+                                    bottom: 1em;
+                                    left: -5%;
+                                    height: 2em;
+                                    width: 110%;
+                                    background-color: rgb(0, 175, 175, 1);
+                                    border-radius: 0.5em;
+                                }
+                                &.dts-range-start {
+                                    &::after {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .sidebar-add-new-reservation {
+            position: fixed;
+            top: 6em;
+            right: 0;
+            width: 30em;
+            height: calc(100vh - 6em);
+            z-index: 1;
+            background: #fff;
+            box-shadow: 0 0 80px 50px rgb(206, 213, 225, 0.2);
+
+            .new-reservation-content {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                padding: 2em;
+                gap: 1em;
+                .reservation-selected-dates,
+                .reservation-total-price,
+                .reservation-select-customer,
+                .reservation-notes,
+                .reservation-confirm {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5em;
+                    h4 {
+                        font-size: 1.2rem;
+                        margin: 0;
+                    }
+                    span,
+                    select {
+                        padding: 1em;
+                        border: 1px solid;
+                        border-radius: 0.3em;
+                    }
+                    textarea {
+                        border: 1px solid;
+                        border-radius: 0.3em;
+                        min-height: 10em;
+                        padding-left: 0.5em;
+                        padding-top: 0.5em;
+                    }
+                    button {
+                        cursor: pointer;
+                        margin-top: 5em;
+                        padding: calc(0.75rem + 1px) calc(1.5rem + 1px);
+                        font-size: 1rem;
+                        font-weight: 600;
+                        color: #fff;
+                        border: none;
+                        background-color: rgb(4, 200, 200);
+                    }
+                }
+            }
+        }
+    }
+}

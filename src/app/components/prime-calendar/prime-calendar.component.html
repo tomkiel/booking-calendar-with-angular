@@ -1,0 +1,78 @@
+<div class="reservation-calendar-content">
+    <div class="properties-sidebar">
+        <div class="reserve-houses">
+            <ng-container *ngFor="let property of properties">
+                <div class="single-propertie">
+                    <div class="propertie-img">
+                        <picture>
+                            <img src="{{ property.image }}">
+                        </picture>
+                    </div>
+                    <span>{{ property.name }}</span>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="properties-table-calendar" id="calendar-content" (scroll)="onScroll($event)">
+        <div class="table-calendar-content">
+            <div class="calendar-months">
+                <ng-container *ngFor="let month of months">
+                    <div class="single-month">
+                        <h4>{{ month.name }} {{ month.year }}</h4>
+                        <div class="calendar-header">
+                            <ng-container *ngFor="let item of [].constructor(month.numberDays); let i = index">
+                                <div class="calendar-day" [ngClass]="{'active' : today === i + 1}">
+                                    <span>{{ i + 1 }}</span>
+                                    <span>{{ getDayName(i + 1, month.count, month.year) }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <dts-select-container #container="dts-select-container" [(selectedItems)]="selectedDaysByDrag"
+                (select)="selectDaysInCalendar($event)">
+                <ng-container *ngFor="let property of properties">
+                    <div class="rendered-items">
+                        <ng-container *ngFor="let month of months">
+                            <ng-container *ngFor="let item of [].constructor(month.numberDays); let i = index">
+                                <div [dtsSelectItem]="{'day': i + 1, 'month': month.count, 'year': month.year, property }" class="calendar-day" id="year_{{ month.year }}_month_{{ month.count }}_day_{{ i }}_property_{{ property.id }}"
+                                    [attr.data-property-id]="property.id">
+                                    <span *ngIf="checkIsWeekendDay(i + 1, month.count, month.year)">{{ property.weekdaysPrice | currency: 'USD' : 'symbol' }}</span>
+                                    <span *ngIf="!checkIsWeekendDay(i + 1, month.count, month.year)">{{ property.weekendPrice | currency: 'USD' : 'symbol' }}</span>
+                                    <div class="selected-bar"></div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </dts-select-container>
+        </div>
+    </div>
+    <div class="sidebar-add-new-reservation" *ngIf="viewRightSidebar">
+        <div class="new-reservation-content">
+            <div class="reservation-selected-dates">
+                <h4>Selected dates</h4>
+                <span>{{ selectedDates }}</span>
+            </div>
+            <div class="reservation-total-price">
+                <h4>Total price</h4>
+                <span>{{ totalPriceSelectedDays | currency: 'USD' : 'symbol' }}</span>
+            </div>
+            <div class="reservation-select-customer">
+                <h4>Select customer</h4>
+                <select>
+                    <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+                </select>
+            </div>
+            <div class="reservation-notes">
+                <h4>Private notes</h4>
+                <textarea placeholder="Notes..."></textarea>
+            </div>
+            <div class="reservation-confirm">
+                <button (click)="viewRightSidebar = false">Confirm</button>
+            </div>
+
+        </div>
+    </div>
+</div>
