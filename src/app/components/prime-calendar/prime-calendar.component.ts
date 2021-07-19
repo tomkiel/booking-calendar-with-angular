@@ -140,6 +140,10 @@ export class PrimeCalendarComponent implements OnInit {
       this.totalPriceSelectedDays = totalPrice;
 
       this.viewRightSidebar = true;
+    } else {
+      this.totalPriceSelectedDays = 0;
+      this.selectedDates = '';
+      this.viewRightSidebar = false;
     }
   }
 
