@@ -5,8 +5,34 @@
         height: 100vh;
         width: 100%;
         .properties-sidebar {
-            padding-top: calc(10em - 1px);
+            padding-top: calc(5em - 1px);
             box-shadow: 0 0 80px 50px rgb(206, 213, 225, 0.2);
+            .properties-filters {
+                display: flex;
+                align-items: center;
+                gap: 0.5em;
+                padding: 1em 0;
+                padding-left: 0.5em;
+                input {
+                    height: 2em;
+                    padding: 0.5em;
+                    border: 1px solid;
+                    border-radius: 0.3em;
+                }
+                button {
+                    background: none;
+                    border: none;
+                    height: 100%;
+                    cursor: pointer;
+                    padding: 0.5em;
+                    svg {
+                        height: 2em;
+                        &:hover {
+                            opacity: 0.8;
+                        }
+                    }
+                }
+            }
             .reserve-houses {
                 display: flex;
                 flex-direction: column;
