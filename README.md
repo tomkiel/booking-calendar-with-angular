@@ -4,6 +4,9 @@ Preview
 ![reservation preview](https://media.giphy.com/media/4JeiC2jfgIh8hDYlpz/giphy.gif)   
 
 
+Preview Update
+![reservation image](https://i.imgur.com/egi2B6o.png)
+
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.1.1.
 

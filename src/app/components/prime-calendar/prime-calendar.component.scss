@@ -10,10 +10,11 @@
             .properties-filters {
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 gap: 0.5em;
-                padding: 1em 0;
-                padding-left: 0.5em;
+                padding: 1em 0.5em;
                 input {
+                    width: 100%;
                     height: 2em;
                     padding: 0.5em;
                     border: 1px solid;
@@ -29,6 +30,89 @@
                         height: 2em;
                         &:hover {
                             opacity: 0.8;
+                        }
+                    }
+                }
+            }
+            .properties-filters-box-container {
+                z-index: 5;
+                position: fixed;
+                margin: 0px;
+                margin-top: -10em;
+                margin-left: 10em;
+                left: 0;
+                transform: translate3d(103px, 76px, 0px);
+                border-radius: 0.475rem;
+                background-color: #fff;
+                box-shadow: 0 0 50px 0 rgba(82, 63, 105, 0.3);
+                width: 320px;
+                display: flex;
+                justify-content: center;
+                .properties-filters-box-content {
+                    width: 100%;
+                    padding: 1em;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    gap: 1.5em;
+                    .filter-box-property-address,
+                    .filter-box-more-filters,
+                    .filter-box-property-bedrooms,
+                    .filter-box-property-guest {
+                        display: flex;
+                        flex-direction: column;
+                        input {
+                            height: 2em;
+                            padding: 0.5em;
+                            border: 1px solid;
+                            border-radius: 0.3em;
+                        }
+                        select {
+                            padding: 1em;
+                            border: 1px solid;
+                            border-radius: 0.3em;
+                        }
+                    }
+                    .filter-box-more-filters {
+                        display: flex;
+                        flex-direction: column;
+
+                        .radio-filter {
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: center;
+
+                            input {
+                                height: 1.5rem;
+                                width: 2.5rem;
+                                &:checked {
+                                    border-radius: 3.25rem;
+                                    background-color: #04c8c8;
+                                    background-position: right center;
+                                    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23FFFFFF'/%3e%3c/svg%3e");
+                                }
+                            }
+                        }
+                    }
+                    .filter-box-actions {
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 0.5em;
+                        button {
+                            flex: 1;
+                            cursor: pointer;
+                            padding: calc(0.75rem + 1px) calc(1.5rem + 1px);
+                            font-size: 1rem;
+                            font-weight: 600;
+                            color: #fff;
+                            border: none;
+                            background-color: rgb(4, 200, 200);
+
+                            &.btn-cancel {
+                                color: #7e8299;
+                                border-color: #f5f8fa;
+                                background-color: #f5f8fa;
+                            }
                         }
                     }
                 }
@@ -57,7 +141,6 @@
                             }
                         }
                     }
-
                     span {
                         font-size: 1rem;
                         font-weight: 600;
@@ -122,7 +205,7 @@
                         border-bottom: 4px solid rgba(208, 208, 208, 0.3);
                         flex-direction: column;
                         &.active {
-                            background-color: rgb(0, 175, 175, 1);;
+                            background-color: rgb(0, 175, 175, 1);
                             span {
                                 color: #fff;
                             }
@@ -182,6 +265,7 @@
                 gap: 1em;
                 .reservation-selected-dates,
                 .reservation-total-price,
+                .reservation-number-nights,
                 .reservation-select-customer,
                 .reservation-notes,
                 .reservation-confirm {

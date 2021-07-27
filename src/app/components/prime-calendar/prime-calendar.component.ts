@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectContainerComponent } from 'ngx-drag-to-select';
+import { PropertyInterface } from 'src/app/interfaces/property-interface';
 import { DateServiceService } from 'src/app/services/date-service.service';
+import { PropertyService } from 'src/app/services/property.service';
 import { ScrollServiceService } from 'src/app/services/scroll-service.service';
 
 export interface PeriodicElement {
@@ -13,14 +15,6 @@ export interface Months {
   numberDays: number;
   year: number;
   count: number;
-}
-
-export interface Property {
-  name: string;
-  image: string;
-  id: number;
-  weekdaysPrice: number,
-  weekendPrice: number
 }
 
 export interface Customer {
@@ -42,10 +36,11 @@ export class PrimeCalendarComponent implements OnInit {
   public currentDate = new Date();
   public numberOfDaysOnMonth: number = 0;
   public months: Months[] = [];
-  public properties: Property[] = [];
+  public properties: PropertyInterface[] = [];
   public selectedDaysByDrag: any;
   public selectedDates: string = '';
   public totalPriceSelectedDays: number = 0;
+  public numberOfNights: number = 0;
 
   public customers: Customer[] = [];
   public viewRightSidebar = false;
@@ -54,10 +49,12 @@ export class PrimeCalendarComponent implements OnInit {
 
   constructor(
     private scrollService: ScrollServiceService,
-    private dateServiceService: DateServiceService
+    private dateServiceService: DateServiceService,
+    private propertyService: PropertyService
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.getPropertiesDataFromServe();
     this.scrollService.determineScroll('calendar-content');
     this.customers = [
       {
@@ -69,30 +66,11 @@ export class PrimeCalendarComponent implements OnInit {
         id: 2
       }
     ];
-    this.properties = [
-      {
-        name: "Hotel das vinhedas Excume - SF",
-        image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-        id: 1,
-        weekdaysPrice: 78.98,
-        weekendPrice: 60.90
-      },
-      {
-        name: "Hotel das vinhedas Excume - NY",
-        image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-        id: 2,
-        weekdaysPrice: 75.00,
-        weekendPrice: 100
-      },
-      {
-        name: "Hotel das hortas - SF",
-        image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-        id: 3,
-        weekdaysPrice: 45.50,
-        weekendPrice: 100.25
-      }
-    ]
     await this.determineNumberOfDaysCurrentDate();
+  }
+
+  async getPropertiesDataFromServe(): Promise<void> {
+    this.properties = await this.propertyService.get();
   }
 
   async determineNumberOfDaysCurrentDate(): Promise<any> {
@@ -130,6 +108,8 @@ export class PrimeCalendarComponent implements OnInit {
       const firstDaySelectedName: string = "year_" + items[0].year + "_month_" + items[0].month + "_day_" + items[0].day + "_property_" + items[0].property.id;
       const dayElement: HTMLElement = document.getElementById(firstDaySelectedName)!;
 
+      this.numberOfNights = orderedDays.length;
+      
       orderedDays.map((item: any) => {
         if (this.checkIsWeekendDay(item.day, item.month, item.year)) {
           totalPrice = totalPrice + item.property.weekdaysPrice;
