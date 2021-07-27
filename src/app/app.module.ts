@@ -7,6 +7,7 @@ import { PrimeCalendarComponent } from './components/prime-calendar/prime-calend
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table';
 import { DragToSelectModule } from 'ngx-drag-to-select';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { DragToSelectModule } from 'ngx-drag-to-select';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatTableModule,
-    DragToSelectModule.forRoot()
+    DragToSelectModule.forRoot(),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
