@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectContainerComponent } from 'ngx-drag-to-select';
+import { CustomerInterface } from 'src/app/interfaces/customer-interface';
 import { PropertyInterface } from 'src/app/interfaces/property-interface';
+import { CustomerService } from 'src/app/services/customer.service';
 import { DateServiceService } from 'src/app/services/date-service.service';
 import { PropertyService } from 'src/app/services/property.service';
 import { ScrollServiceService } from 'src/app/services/scroll-service.service';
@@ -15,11 +17,6 @@ export interface Months {
   numberDays: number;
   year: number;
   count: number;
-}
-
-export interface Customer {
-  name: string,
-  id: number
 }
 
 @Component({
@@ -37,51 +34,65 @@ export class PrimeCalendarComponent implements OnInit {
   public numberOfDaysOnMonth: number = 0;
   public months: Months[] = [];
   public properties: PropertyInterface[] = [];
+  public propertiesToRenderHTML: PropertyInterface[] = [];
   public selectedDaysByDrag: any;
   public selectedDates: string = '';
   public totalPriceSelectedDays: number = 0;
   public numberOfNights: number = 0;
 
-  public customers: Customer[] = [];
+  public customers: CustomerInterface[] = [];
   public viewRightSidebar = false;
+  public viewFilterOptions: Boolean = false;
+  public searchContent: string = '';
+
+  public filterOptions = {
+    address: '',
+    guestName: '',
+    guestEmail: '',
+    numberOfRooms: 1,
+    isResort: false,
+    isPool: false,
+  };
 
   public today = Number(String(this.currentDate.getDate()).padStart(2, '0'));
 
   constructor(
     private scrollService: ScrollServiceService,
     private dateServiceService: DateServiceService,
-    private propertyService: PropertyService
+    private propertyService: PropertyService,
+    private customerService: CustomerService
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.getPropertiesDataFromServe();
+    this.getCustomersDataFromServe();
     this.scrollService.determineScroll('calendar-content');
-    this.customers = [
-      {
-        name: "BRUNO GABRIEL FREITAS JUSTINO",
-        id: 1
-      },
-      {
-        name: "SAMANTA PINTO COELHO LINHARES",
-        id: 2
-      }
-    ];
+    this.customers = [];
     await this.determineNumberOfDaysCurrentDate();
   }
 
   async getPropertiesDataFromServe(): Promise<void> {
-    this.properties = await this.propertyService.get();
+    const properties: PropertyInterface[] = await this.propertyService.get();
+    this.properties = properties;
+    this.propertiesToRenderHTML = properties;
+  }
+
+  async getCustomersDataFromServe(): Promise<void> {
+    this.customers = await this.customerService.get();
   }
 
   async determineNumberOfDaysCurrentDate(): Promise<any> {
     this.numberOfDaysOnMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 0).getDate();
+    console.log(this.currentDate);
+
     await this.createDataSourceByNumberOfDays(this.numberOfDaysOnMonth);
+
     this.months.push(
       {
-        name: 'July',
+        name: this.dateServiceService.getNameOfMonth(this.currentDate.getMonth(), this.currentDate.getFullYear()),
         numberDays: this.numberOfDaysOnMonth,
-        year: 2021,
-        count: 7
+        year: this.currentDate.getFullYear(),
+        count: this.currentDate.getMonth()
       })
   }
 
@@ -99,7 +110,7 @@ export class PrimeCalendarComponent implements OnInit {
   async selectDaysInCalendar(items: Array<any>): Promise<void> {
     if (items[0] !== undefined) {
       let totalPrice: number = 0;
-      const orderedDays = items.sort(function(a, b) {
+      const orderedDays = items.sort(function (a, b) {
         return a.day - b.day;
       });
 
@@ -109,7 +120,7 @@ export class PrimeCalendarComponent implements OnInit {
       const dayElement: HTMLElement = document.getElementById(firstDaySelectedName)!;
 
       this.numberOfNights = orderedDays.length;
-      
+
       orderedDays.map((item: any) => {
         if (this.checkIsWeekendDay(item.day, item.month, item.year)) {
           totalPrice = totalPrice + item.property.weekdaysPrice;
@@ -137,6 +148,55 @@ export class PrimeCalendarComponent implements OnInit {
 
   getDayName(day: number, month: number, year: number): string {
     return this.dateServiceService.getNameOfDay(day, month, year);
+  }
+
+  filterPropertyFromName(event: any): void {
+    const propertiesFiltered: PropertyInterface[] = this.properties.filter((property: PropertyInterface) => {
+      return property.name.includes(event.target.value);
+    });
+    this.propertiesToRenderHTML = propertiesFiltered;
+  }
+
+  applyFilters(): void {
+    let filteredProperties: PropertyInterface[] = this.propertiesToRenderHTML;
+    if (this.filterOptions.address !== '') {
+      filteredProperties = filteredProperties.filter((property: PropertyInterface) => {
+        return property.address.includes(this.filterOptions.address);
+      });
+    };
+    if (this.filterOptions.guestName !== '') {
+      filteredProperties = filteredProperties.filter((property: PropertyInterface) => {
+        return property.guestName.includes(this.filterOptions.guestName);
+      });
+    };
+    if (this.filterOptions.guestEmail !== '') {
+      filteredProperties = filteredProperties.filter((property: PropertyInterface) => {
+        return property.guestEmail === this.filterOptions.guestEmail;
+      });
+    };
+
+    if (this.filterOptions.numberOfRooms > 0) {
+      filteredProperties = filteredProperties.filter((property: PropertyInterface) => {
+        return property.numberOfRooms >= this.filterOptions.numberOfRooms;
+      });
+    };
+
+    if (this.filterOptions.isResort) {
+      filteredProperties = filteredProperties.filter((property: PropertyInterface) => {
+        return property.isResort;
+      });
+    };
+
+    if (this.filterOptions.isPool) {
+      filteredProperties = filteredProperties.filter((property: PropertyInterface) => {
+        return property.isPool;
+      });
+    };
+    this.propertiesToRenderHTML = filteredProperties;
+  }
+
+  clearFilters(): void {
+    this.propertiesToRenderHTML = this.properties;
   }
 
 }

@@ -9,5 +9,6 @@ export interface PropertyInterface {
   guestName: string,
   guestEmail: string,
   isPool: boolean,
-  numberOfBedrooms: number
+  numberOfRooms: number,
+  address: string,
 }

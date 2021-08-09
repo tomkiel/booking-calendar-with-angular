@@ -1,0 +1,162 @@
+{
+  "properties": [
+      {
+      "name": "Hotel das vinhedas Excume - SF",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 1,
+      "weekdaysPrice": 78.98,
+      "weekendPrice": 60.90,
+      "isResort": true,
+      "reservationId": 15805877715252,
+      "guestName": "Roy BovaVentura",
+      "guestEmail": "roy@email.com",
+      "isPool": false,
+      "numberOfRooms": 1,
+      "address": "123 Main St., California, USA"
+    },
+    {
+      "name": "Hotel das vinhedas Excume - NY",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 2,
+      "weekdaysPrice": 75.00,
+      "weekendPrice": 100,
+      "isResort": false,
+      "reservationId": 2122231,
+      "guestName": "Paul DiMari",
+      "guestEmail": "paul@email.com",
+      "isPool": true,
+      "numberOfRooms": 2,
+      "address": "145 Main St., California, USA"
+    },
+    {
+      "name": "Hotel das hortas - SF",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 3,
+      "weekdaysPrice": 45.50,
+      "weekendPrice": 100.25,
+      "isResort": false,
+      "reservationId": 34525232423,
+      "guestName": "Patty McMozzart",
+      "guestEmail": "patty@email.com",
+      "isPool": true,
+      "numberOfRooms": 4,
+      "address": "123 Main St., New York, USA"
+    },
+    {
+      "name": "Hotel das hortas - SF",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 3,
+      "weekdaysPrice": 45.50,
+      "weekendPrice": 100.25,
+      "isResort": false,
+      "reservationId": 34525232423,
+      "guestName": "Patty McMozzart",
+      "guestEmail": "patty@email.com",
+      "isPool": true,
+      "numberOfRooms": 4,
+      "address": "1 Main St., New York, USA"
+    },
+    {
+      "name": "Hotel das hortas - SF",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 3,
+      "weekdaysPrice": 45.50,
+      "weekendPrice": 100.25,
+      "isResort": false,
+      "reservationId": 34525232423,
+      "guestName": "Patty McMozzart",
+      "guestEmail": "patty@email.com",
+      "isPool": true,
+      "numberOfRooms": 4,
+      "address": "78 Main St., New York, USA"
+    },
+    {
+      "name": "Hotel das hortas - SF",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 3,
+      "weekdaysPrice": 45.50,
+      "weekendPrice": 100.25,
+      "isResort": false,
+      "reservationId": 34525232423,
+      "guestName": "Patty McMozzart",
+      "guestEmail": "patty@email.com",
+      "isPool": true,
+      "numberOfRooms": 4,
+      "address": "123 Main St., New York, USA"
+    },
+    {
+      "name": "Hotel das hortas - SF",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 3,
+      "weekdaysPrice": 45.50,
+      "weekendPrice": 100.25,
+      "isResort": false,
+      "reservationId": 34525232423,
+      "guestName": "Patty McMozzart",
+      "guestEmail": "patty@email.com",
+      "isPool": true,
+      "numberOfRooms": 4,
+      "address": "123 Main St., New York, USA"
+    },
+    {
+      "name": "Hotel das hortas - SF",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 3,
+      "weekdaysPrice": 45.50,
+      "weekendPrice": 100.25,
+      "isResort": true,
+      "reservationId": 34525232423,
+      "guestName": "Patty McMozzart",
+      "guestEmail": "patty@email.com",
+      "isPool": true,
+      "numberOfRooms": 4,
+      "address": "123 Main St., New York, USA"
+    },
+    {
+      "name": "Hotel das hortas - SF",
+      "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+      "id": 3,
+      "weekdaysPrice": 45.50,
+      "weekendPrice": 100.25,
+      "isResort": false,
+      "reservationId": 34525232423,
+      "guestName": "Patty McMozzart",
+      "guestEmail": "patty@email.com",
+      "isPool": true,
+      "numberOfRooms": 4,
+      "address": "123 Main St., New York, USA"
+    }
+  ],
+  "customers": [
+    {
+      "id":1,
+      "name": "Patty McMozzart",
+      "email": "patty@email.com",
+      "phone": "415-555-1234",
+      "address": "123 Main St.",
+      "city": "San Francisco",
+      "state": "CA",
+      "zip": "94105"
+    },
+    {
+      "id":2,
+      "name": "Pedro Winter",
+      "email": "pedro@email.com",
+      "phone": "415-555-1234",
+      "address": "123 Main St.",
+      "city": "San Francisco",
+      "state": "CA",
+      "zip": "94105"
+    },
+    {
+      "id":3,
+      "name": "Pamela Hinna",
+      "email": "pamela@email.com",
+      "phone": "415-555-1234",
+      "address": "123 Main St.",
+      "city": "San Francisco",
+      "state": "CA",
+      "zip": "94105"
+    }
+  ]
+}
