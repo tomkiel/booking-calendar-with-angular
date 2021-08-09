@@ -1,8 +1,8 @@
 <div class="reservation-calendar-content">
     <div class="properties-sidebar">
         <div class="properties-filters">
-            <input type="text" placeholder="Search"/>
-            <button>
+            <input type="text" placeholder="Search" (input)="filterPropertyFromName($event)"/>
+            <button (click)="viewFilterOptions = !viewFilterOptions">
                 <span>
                     <svg version="1.1" id="menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24.75 24.75" style="enable-background:new 0 0 24.75 24.75;" xml:space="preserve">
                         <g>
@@ -14,59 +14,67 @@
                 </span>
             </button>
         </div>
-        <div class="properties-filters-box-container">
+        <div class="properties-filters-box-container" *ngIf="viewFilterOptions">
             <div class="properties-filters-box-content">
                 <div class="filter-box-title">
                     <h4>Filter Options</h4>
+                    <button (click)="viewFilterOptions = false">
+                        <svg id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <path d="M443.6,387.1L312.4,255.4l131.5-130c5.4-5.4,5.4-14.2,0-19.6l-37.4-37.6c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4  L256,197.8L124.9,68.3c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4L68,105.9c-5.4,5.4-5.4,14.2,0,19.6l131.5,130L68.4,387.1  c-2.6,2.6-4.1,6.1-4.1,9.8c0,3.7,1.4,7.2,4.1,9.8l37.4,37.6c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1L256,313.1l130.7,131.1  c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1l37.4-37.6c2.6-2.6,4.1-6.1,4.1-9.8C447.7,393.2,446.2,389.7,443.6,387.1z" />
+                          </svg>
+                    </button>
                 </div>
                 <div class="filter-box-property-address">
                     <span>Address:</span>
-                    <input type="text" placeholder="Search"/>
+                    <input type="text" placeholder="Search" [(ngModel)]="filterOptions.address"/>
                 </div>
                 <div class="filter-box-property-guest">
                     <span>Guest Name:</span>
-                    <select type="text" name="guestName">
-                        <ng-container *ngFor="let property of properties">
-                            <option>{{ property.guestName }}</option>
+                    <select type="text" name="guestName" [(ngModel)]="filterOptions.guestName">
+                        <option value="">Select Guest Name</option>
+                        <ng-container *ngFor="let property of propertiesToRenderHTML">
+                            <option value="{{ property.guestName }}">{{ property.guestName }}</option>
                         </ng-container>
                     </select>
                 </div>
                 <div class="filter-box-property-guest">
                     <span>Guest Email:</span>
-                    <select type="text" name="guestEmail">
-                        <ng-container *ngFor="let property of properties">
-                            <option>{{ property.guestEmail }}</option>
+                    <select type="text" name="guestEmail" [(ngModel)]="filterOptions.guestEmail">
+                        <option value="">Select Guest Email</option>
+                        <ng-container *ngFor="let property of propertiesToRenderHTML">
+                            <option value="{{ property.guestEmail }}" >{{ property.guestEmail }}</option>
                         </ng-container>
                     </select>
                 </div>
                 <div class="filter-box-property-bedrooms">
                     <span>Number of Bedrooms:</span>
-                    <select type="text" placeholder="Bedrooms">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
+                    <select type="text" placeholder="Bedrooms" [(ngModel)]="filterOptions.numberOfRooms">
+                        <option value="0"></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
                     </select>
                 </div>
                 <div class="filter-box-more-filters">
                     <span>Filters:</span>
                     <div class="radio-filter">
                         <label>Resort</label>
-                        <input type="checkbox" name="resort"/>
+                        <input type="checkbox" name="resort" [(ngModel)]="filterOptions.isResort"/>
                     </div>
                     <div class="radio-filter">
                         <label>Pool</label>
-                        <input type="checkbox" name="pool"/>
+                        <input type="checkbox" name="pool" [(ngModel)]="filterOptions.isPool"/>
                     </div>
                 </div>
                 <div class="filter-box-actions">
-                    <button class="btn-cancel">Reset</button>
-                    <button>Apply</button>
+                    <button class="btn-cancel" (click)="clearFilters()">Reset</button>
+                    <button (click)="applyFilters()">Apply</button>
                 </div>
             </div>
         </div>
         <div class="reserve-houses">
-            <ng-container *ngFor="let property of properties">
+            <ng-container *ngFor="let property of propertiesToRenderHTML">
                 <div class="single-propertie">
                     <div class="propertie-img">
                         <picture>
@@ -97,7 +105,7 @@
             </div>
             <dts-select-container #container="dts-select-container" [(selectedItems)]="selectedDaysByDrag"
                 (select)="selectDaysInCalendar($event)">
-                <ng-container *ngFor="let property of properties">
+                <ng-container *ngFor="let property of propertiesToRenderHTML">
                     <div class="rendered-items">
                         <ng-container *ngFor="let month of months">
                             <ng-container *ngFor="let item of [].constructor(month.numberDays); let i = index">

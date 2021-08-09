@@ -17,4 +17,10 @@ export class DateServiceService {
     const date: Date = new Date(year, month, day);
     return days[date.getDay()];
   }
+
+  getNameOfMonth(month: number, year: number): string {
+    const months: Array<string> = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const date: Date = new Date(year, month, 1);
+    return months[date.getMonth()];
+  }
 }
