@@ -32,10 +32,12 @@ export class PrimeCalendarComponent implements OnInit, AfterViewInit {
   public months: MonthInterface[] = [];
   public properties: PropertyInterface[] = [];
   public propertiesToRenderHTML: PropertyInterface[] = [];
+  public selectedCards: any[] = [];
   public selectedDaysByDrag: any;
   public selectedDates: string = '';
   public totalPriceSelectedDays: number = 0;
   public numberOfNights: number = 0;
+  public selectedProperties: PropertyInterface[] = [];
   public colors = [
     '#F44336',
     '#E91E63',
@@ -186,6 +188,7 @@ export class PrimeCalendarComponent implements OnInit, AfterViewInit {
 
   async selectDaysInCalendar(items: Array<any>): Promise<void> {
     if (items[0] !== undefined) {
+      this.selectedCards = items;
       let totalPrice: number = 0;
       const orderedDays = items.sort(function (a, b) {
         return a.day - b.day;
@@ -201,9 +204,10 @@ export class PrimeCalendarComponent implements OnInit, AfterViewInit {
           totalPrice = totalPrice + item.property.weekendPrice;
         }
       });
-      this.totalPriceSelectedDays = totalPrice;
 
+      this.totalPriceSelectedDays = totalPrice;
       this.viewRightSidebar = true;
+
     } else {
       this.totalPriceSelectedDays = 0;
       this.selectedDates = '';
@@ -274,23 +278,43 @@ export class PrimeCalendarComponent implements OnInit, AfterViewInit {
 
   confirmNewReservation(): void {
     if (!this.customerOfReservation) {
+
       document.getElementById('select-customer-error')!.style.display = 'block';
       setTimeout(() => {
         document.getElementById('select-customer-error')!.style.display = 'none';
       }, 3000);
-    }
 
-    const newReservation: ReservationInterface = {
-      property: [],
-      customer: this.customerOfReservation!,
-      numberOfNights: this.numberOfNights,
-      totalPrice: this.totalPriceSelectedDays,
-      description: this.descriptionOfNewReservation,
-      checkIn: new Date().toString(),
-      checkOut: new Date().toString(),
-      dates: []
-    };
-    window.alert('Reservation created successfully!');
+    }else {
+
+      const properties: PropertyInterface[] = [];
+      this.selectedCards.forEach((item: any) => {
+        if(properties.indexOf(item.property) === -1){
+          properties.push(item.property);
+        }
+      });
+
+      const orderedDays = this.selectedCards.sort(function (a, b) {
+        return new Date(a.year, a.month + 1, a.day ).getTime() - new Date(a.year, a.month + 1, a.day ).getTime();
+      });
+
+      const dates: string[] = [];
+      this.selectedCards.forEach((item: any) => {
+        dates.push(new Date( item.year, item.month + 1, item.day).toString());
+      });
+
+      const newReservation: ReservationInterface = {
+        property: properties,
+        customer: this.customerOfReservation!,
+        numberOfNights: this.numberOfNights,
+        totalPrice: this.totalPriceSelectedDays,
+        description: this.descriptionOfNewReservation,
+        checkIn: dates[0],
+        checkOut: dates[dates.length - 1 ],
+        dates: dates
+      };
+      console.log(newReservation);
+      window.alert('Reservation created successfully!');
+    }
   }
 
   cancelNewReservation(): void {
