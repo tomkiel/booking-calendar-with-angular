@@ -1,3 +1,5 @@
+import { ReservationInterface } from "./reservation-interface";
+
 export interface PropertyInterface {
   id: number,
   name: string,
@@ -11,4 +13,5 @@ export interface PropertyInterface {
   isPool: boolean,
   numberOfRooms: number,
   address: string,
+  reservations?: ReservationInterface[],
 }

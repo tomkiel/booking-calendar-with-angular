@@ -1,11 +1,15 @@
 :host {
     .reservation-calendar-content {
         display: grid;
-        grid-template-columns: 18em auto;
+        grid-template-columns: 20em auto;
         height: 100vh;
-        width: 100%;
+        width: 100vw;
+
+        &.view-right-sidebar {
+            // width: calc(100vw - 30em);
+        }
         .properties-sidebar {
-            padding-top: calc(5em - 1px);
+            padding-top: calc(5em - 2px);
             box-shadow: 0 0 80px 50px rgb(206, 213, 225, 0.2);
             .properties-filters {
                 display: flex;
@@ -145,20 +149,20 @@
                 display: flex;
                 flex-direction: column;
                 border-top: 1px solid rgb(221, 221, 221);
-                .single-propertie {
+                .single-property {
                     display: flex;
                     justify-content: flex-start;
                     align-items: center;
                     gap: 1em;
                     padding: 0.5em;
                     border-bottom: 1px solid rgb(221, 221, 221);
-                    max-height: 5em;
-                    .propertie-img {
+                    max-height: 3em;
+                    .property-img {
                         picture {
                             display: flex;
                             img {
-                                width: 6em;
-                                height: calc(5em - (0.5em + 0.5em));
+                                width: 4em;
+                                height: calc(4em - (0.5em + 0.5em));
                                 object-fit: cover;
                                 object-position: center;
                                 border-radius: 0.2em;
@@ -167,11 +171,11 @@
                     }
                     span {
                         font-size: 1rem;
-                        font-weight: 600;
+                        font-weight: 500;
                         overflow: hidden;
                         white-space: nowrap;
                         text-overflow: ellipsis;
-                        max-width: 150px;
+                        max-width: 14em;
                     }
                 }
             }
@@ -187,6 +191,8 @@
                         flex-direction: column;
                         justify-content: flex-end;
                         align-items: center;
+                        border-right: 1px solid #777777;
+                        border-left: 1px solid #777777;
 
                         h4 {
                             margin: 0;
@@ -200,6 +206,12 @@
                 .rendered-items {
                     width: 100%;
                     display: flex;
+                    .single-month {
+                        display: flex;
+                        align-items: center;
+                        border-right: 1px solid rgb(119, 119, 119);
+                        border-left: 1px solid rgb(119, 119, 119);
+                    }
                     .calendar-day,
                     .dts-select-item,
                     .selected {
@@ -224,9 +236,9 @@
                 }
                 .calendar-header {
                     .calendar-day {
-                        border-top: 1px solid rgba(208, 208, 208, 1);
-                        border-right: 1px solid rgba(208, 208, 208, 1);
-                        border-bottom: 4px solid rgba(208, 208, 208, 0.3);
+                        border-top: 1px solid rgba(119, 119, 119, 1);
+                        border-right: 1px solid rgba(119, 119, 119, 1);
+                        border-bottom: 4px solid rgba(119, 119, 119, 0.3);
                         flex-direction: column;
                         &.active {
                             background-color: rgb(0, 175, 175, 1);
@@ -238,8 +250,19 @@
                 }
                 .rendered-items {
                     .calendar-day {
-                        height: 5em;
+                        height: calc(4em + 1px);
                         position: relative;
+
+                        &.disabled {
+                            cursor: not-allowed !important;
+                            background: repeating-linear-gradient(
+                                -45deg,
+                                rgba(228, 223, 223, 0.5),
+                                #fff 5px,
+                                #fff 5px,
+                                #fff 15px,
+                            );
+                        }
                         .selected-bar {
                             display: none;
                         }
@@ -252,17 +275,26 @@
                                 padding-right: 0.3em;
                                 padding-top: 0.3em;
                                 .selected-bar {
-                                    display: block;
+                                    display: flex;
+                                    align-items: center;
                                     position: absolute;
-                                    bottom: 1em;
-                                    left: -5%;
-                                    height: 2em;
-                                    width: 110%;
+                                    z-index: 1;
+                                    bottom: 0.2em;
+                                    left: 0%;
+                                    height: 2.3em;
+                                    width: 101%;
                                     background-color: rgb(0, 175, 175, 1);
-                                    border-radius: 0.5em;
-                                }
-                                &.dts-range-start {
-                                    &::after {
+                                    border-radius: 0;
+                                    color: #fff;
+                                    padding-left: 0.3em;
+                                    white-space: nowrap;
+                                    text-overflow: ellipsis;
+                                    &.first-item {
+                                        border-radius: 0.3em 0 0 0.3em;
+                                        z-index: 2;
+                                    }
+                                    &.last-item {
+                                        border-radius: 0 0.3em 0.3em 0;
                                     }
                                 }
                             }
@@ -273,10 +305,10 @@
         }
         .sidebar-add-new-reservation {
             position: fixed;
-            top: 6em;
+            top: 0em;
             right: 0;
             width: 30em;
-            height: calc(100vh - 6em);
+            height: 100vh;
             z-index: 1;
             background: #fff;
             box-shadow: 0 0 80px 50px rgb(206, 213, 225, 0.2);
@@ -292,7 +324,8 @@
                 .reservation-number-nights,
                 .reservation-select-customer,
                 .reservation-notes,
-                .reservation-confirm {
+                .reservation-confirm,
+                .reservation-tag-color {
                     display: flex;
                     flex-direction: column;
                     gap: 0.5em;
@@ -313,15 +346,53 @@
                         padding-left: 0.5em;
                         padding-top: 0.5em;
                     }
+                }
+
+                .reservation-confirm {
+                    flex-direction: row;
+                    margin-top: 5em;
                     button {
+                        flex: 1;
                         cursor: pointer;
-                        margin-top: 5em;
                         padding: calc(0.75rem + 1px) calc(1.5rem + 1px);
                         font-size: 1rem;
                         font-weight: 600;
                         color: #fff;
                         border: none;
-                        background-color: rgb(4, 200, 200);
+
+                        &.cancel {
+                            background-color: rgb(255, 0, 0);
+                        }
+                        &.confirm {
+                            background-color: rgb(0, 175, 175);
+                        }
+                    }
+                }
+            }
+
+            .reservation-tag-color {
+                .reservation-tag-color-items {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 1em;
+                    .reservation-tag-color-item {
+                        margin: 0;
+                        padding: 0;
+                        width: 3em;
+                        height: 3em;
+                        border-radius: 50%;
+                        border: 2px solid rgb(177, 177, 177);
+                        cursor: pointer;
+
+                        &.selected {
+                            &::after {
+                                background-color: rgba(255, 255, 255, 0.8);
+                                content: '';
+                                width: 3em;
+                                height: 3em;
+                                border-radius: 50%;
+                            }
+                        }
                     }
                 }
             }
