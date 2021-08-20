@@ -1,4 +1,4 @@
-<div class="reservation-calendar-content">
+<div class="reservation-calendar-content" [ngClass]="{'view-right-sidebar' : viewRightSidebar}">
     <div class="properties-sidebar">
         <div class="properties-filters">
             <input type="text" placeholder="Search" (input)="filterPropertyFromName($event)"/>
@@ -75,8 +75,8 @@
         </div>
         <div class="reserve-houses">
             <ng-container *ngFor="let property of propertiesToRenderHTML">
-                <div class="single-propertie">
-                    <div class="propertie-img">
+                <div class="single-property">
+                    <div class="property-img">
                         <picture>
                             <img src="{{ property.image }}">
                         </picture>
@@ -93,8 +93,8 @@
                     <div class="single-month">
                         <h4>{{ month.name }} {{ month.year }}</h4>
                         <div class="calendar-header">
-                            <ng-container *ngFor="let item of [].constructor(month.numberDays); let i = index">
-                                <div class="calendar-day" [ngClass]="{'active' : today === i + 1}">
+                            <ng-container #calendarDaysHeader *ngFor="let item of [].constructor(month.numberDays); let i = index">
+                                <div class="calendar-day" [ngClass]="{'active' : isToday(i + 1, month.count, month.year)}" id="{{ isToday(i + 1, month.count, month.year) ? 'is_today' : '' }}">
                                     <span>{{ i + 1 }}</span>
                                     <span>{{ getDayName(i + 1, month.count, month.year) }}</span>
                                 </div>
@@ -107,16 +107,32 @@
                 (select)="selectDaysInCalendar($event)">
                 <ng-container *ngFor="let property of propertiesToRenderHTML">
                     <div class="rendered-items">
-                        <ng-container *ngFor="let month of months">
-                            <ng-container *ngFor="let item of [].constructor(month.numberDays); let i = index">
-                                <div [dtsSelectItem]="{'day': i + 1, 'month': month.count, 'year': month.year, property }" class="calendar-day" id="year_{{ month.year }}_month_{{ month.count }}_day_{{ i }}_property_{{ property.id }}"
-                                    [attr.data-property-id]="property.id">
+                        <div class="single-month" *ngFor="let month of months">
+                            <ng-container #calendarDaysReservation *ngFor="let item of [].constructor(month.numberDays); let i = index">
+                                <div class="calendar-day disabled" 
+                                    *ngIf="!isDateSelectedValid(i + 1, month.count, month.year)" 
+                                    id="year_{{ month.year }}_month_{{ month.count }}_day_{{ i + 1 }}_property_{{ property.id }}">
                                     <span *ngIf="checkIsWeekendDay(i + 1, month.count, month.year)">{{ property.weekdaysPrice | currency: 'USD' : 'symbol' }}</span>
                                     <span *ngIf="!checkIsWeekendDay(i + 1, month.count, month.year)">{{ property.weekendPrice | currency: 'USD' : 'symbol' }}</span>
-                                    <div class="selected-bar"></div>
+                                    <div class="selected-bar" [ngStyle]="{ backgroundColor: colors[property.id % this.colors.length] }"></div>
+                                </div>
+                                <div [dtsSelectItem]="
+                                {
+                                    'day': i + 1, 
+                                    'month': month.count, 
+                                    'year': month.year, 
+                                    property
+                                }" 
+                                    class="calendar-day"
+                                    id="year_{{ month.year }}_month_{{ month.count }}_day_{{ i + 1 }}_property_{{ property.id }}"
+                                    [attr.data-property-id]="property.id"
+                                    *ngIf="isDateSelectedValid(i + 1, month.count, month.year)">
+                                    <span *ngIf="checkIsWeekendDay(i + 1, month.count, month.year)">{{ property.weekdaysPrice | currency: 'USD' : 'symbol' }}</span>
+                                    <span *ngIf="!checkIsWeekendDay(i + 1, month.count, month.year)">{{ property.weekendPrice | currency: 'USD' : 'symbol' }}</span>
+                                    <div class="selected-bar" [ngStyle]="{ backgroundColor: colorOfNewReservation }"></div>
                                 </div>
                             </ng-container>
-                        </ng-container>
+                        </div>
                     </div>
                 </ng-container>
             </dts-select-container>
@@ -138,18 +154,26 @@
             </div>
             <div class="reservation-select-customer">
                 <h4>Select customer</h4>
-                <select>
-                    <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+                <select [(ngModel)]="customerOfReservation">
+                    <option value="">Select Customer</option>
+                    <option *ngFor="let customer of customers" [ngValue]="customer">{{ customer.name }}</option>
                 </select>
+                <span class="message error" id="select-customer-error">Please select a customer</span>
             </div>
             <div class="reservation-notes">
                 <h4>Private notes</h4>
                 <textarea placeholder="Notes..."></textarea>
             </div>
-            <div class="reservation-confirm">
-                <button (click)="viewRightSidebar = false">Confirm</button>
+            <div class="reservation-tag-color">
+                <h4>Select color</h4>
+                <div class="reservation-tag-color-items">
+                    <button class="reservation-tag-color-item" *ngFor="let color of colors" [ngStyle]="{ backgroundColor: color }" (click)="colorOfNewReservation = color"></button>
+                </div>
             </div>
-
+            <div class="reservation-confirm">
+                <button class="cancel" (click)="cancelNewReservation()">Cancel</button>
+                <button class="confirm" (click)="confirmNewReservation()">Confirm</button>
+            </div>
         </div>
     </div>
 </div>

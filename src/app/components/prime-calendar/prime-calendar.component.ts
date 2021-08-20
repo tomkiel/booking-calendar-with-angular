@@ -1,7 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { SelectContainerComponent } from 'ngx-drag-to-select';
 import { CustomerInterface } from 'src/app/interfaces/customer-interface';
+import { MonthInterface } from 'src/app/interfaces/month-interface';
 import { PropertyInterface } from 'src/app/interfaces/property-interface';
+import { ReservationInterface } from 'src/app/interfaces/reservation-interface';
 import { CustomerService } from 'src/app/services/customer.service';
 import { DateServiceService } from 'src/app/services/date-service.service';
 import { PropertyService } from 'src/app/services/property.service';
@@ -12,33 +14,53 @@ export interface PeriodicElement {
   day: number;
 }
 
-export interface Months {
-  name: string;
-  numberDays: number;
-  year: number;
-  count: number;
-}
-
 @Component({
   selector: 'app-prime-calendar',
   templateUrl: './prime-calendar.component.html',
   styleUrls: ['./prime-calendar.component.scss']
 })
-export class PrimeCalendarComponent implements OnInit {
+export class PrimeCalendarComponent implements OnInit, AfterViewInit {
 
   @ViewChild(SelectContainerComponent) dtsContainer!: SelectContainerComponent;
+  @ViewChildren('calendarDaysHeader') calendarDaysHeader?: QueryList<any>;
+  @ViewChildren('calendarDaysReservation') calendarDaysReservation?: QueryList<any>;
 
   public displayedColumns: string[] = ['day'];
   public dataSource: PeriodicElement[] = [];
-  public currentDate = new Date();
+  public currentDate = new Date((new Date()).setHours(0, 0, 0, 0));
   public numberOfDaysOnMonth: number = 0;
-  public months: Months[] = [];
+  public months: MonthInterface[] = [];
   public properties: PropertyInterface[] = [];
   public propertiesToRenderHTML: PropertyInterface[] = [];
   public selectedDaysByDrag: any;
   public selectedDates: string = '';
   public totalPriceSelectedDays: number = 0;
   public numberOfNights: number = 0;
+  public colors = [
+    '#F44336',
+    '#E91E63',
+    '#9C27B0',
+    '#673AB7',
+    '#3F51B5',
+    '#03A9F4',
+    '#00BCD4',
+    '#009688',
+    '#4CAF50',
+    '#8BC34A',
+    '#CDDC39',
+    '#9E9E9E',
+    '#607D8B',
+    '#FF9800',
+    '#FF5722',
+    '#795548',
+    '#9E9E9E',
+    '#907D8B',
+  ];
+
+  public descriptionOfNewReservation: string = '';
+  public customerOfReservation?: CustomerInterface;
+  public colorOfNewReservation: string = '';
+  public reservations = [];
 
   public customers: CustomerInterface[] = [];
   public viewRightSidebar = false;
@@ -71,6 +93,41 @@ export class PrimeCalendarComponent implements OnInit {
     await this.determineNumberOfDaysCurrentDate();
   }
 
+  async ngAfterViewInit(): Promise<void> {
+    this.calendarDaysHeader!.changes.subscribe(() => {
+      const dayElement: HTMLElement = document.getElementById('is_today')!;
+      dayElement.scrollIntoView({behavior: 'auto', inline: 'center'});
+    });
+
+    this.calendarDaysReservation!.changes.subscribe(() => {
+
+      this.properties.map((property: PropertyInterface) => {
+        property.reservations?.map((reservation: ReservationInterface) => {
+          reservation.dates.map((reservationDate: string, index: number) => {
+            const date: Date = new Date(reservationDate);
+            const dayElement: HTMLElement = document.getElementById(`year_${date.getFullYear()}_month_${date.getMonth()}_day_${date.getDate()}_property_${property.id}`)!;
+            if (dayElement) {
+              dayElement.classList.add('dts-select-item');
+              dayElement.classList.add('selected');
+              (dayElement.lastChild! as HTMLDivElement).style.backgroundColor = this.colors[reservation.id!];
+              if(reservation.dates.length === index + 1) {
+                (dayElement.lastChild! as HTMLDivElement).classList.add('last-item');
+              }
+
+              if (index === 0) {
+                (dayElement.lastChild! as HTMLDivElement).classList.add('first-item');
+                (dayElement.lastChild! as HTMLDivElement).textContent = reservation.customer.name + " - " + reservation.dates.length + " Days" ;
+              }
+            }
+          });
+        });
+      });
+
+      const dayElement: HTMLElement = document.getElementById('is_today')!;
+      dayElement.scrollIntoView({behavior: 'auto', inline: 'center'});
+    });
+  }
+
   async getPropertiesDataFromServe(): Promise<void> {
     const properties: PropertyInterface[] = await this.propertyService.get();
     this.properties = properties;
@@ -82,9 +139,7 @@ export class PrimeCalendarComponent implements OnInit {
   }
 
   async determineNumberOfDaysCurrentDate(): Promise<any> {
-    this.numberOfDaysOnMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 0).getDate();
-    console.log(this.currentDate);
-
+    this.numberOfDaysOnMonth = this.dateServiceService.getNumberOfDaysInMonth(this.currentDate.getMonth(), this.currentDate.getFullYear());
     await this.createDataSourceByNumberOfDays(this.numberOfDaysOnMonth);
 
     this.months.push(
@@ -93,6 +148,12 @@ export class PrimeCalendarComponent implements OnInit {
         numberDays: this.numberOfDaysOnMonth,
         year: this.currentDate.getFullYear(),
         count: this.currentDate.getMonth()
+      },
+      {
+        name: this.dateServiceService.getNameOfMonth(this.currentDate.getMonth() + 1, this.currentDate.getFullYear()),
+        numberDays: this.dateServiceService.getNumberOfDaysInMonth(this.currentDate.getMonth() + 1, this.currentDate.getFullYear()),
+        year: this.currentDate.getFullYear(),
+        count: this.currentDate.getMonth() + 1
       })
   }
 
@@ -107,6 +168,22 @@ export class PrimeCalendarComponent implements OnInit {
     }
   }
 
+  isToday(day: number, month: number, year: number): Boolean {
+    const date: Date = new Date(year, month, day);
+    if (date.valueOf() === this.currentDate.valueOf()) {
+      return true;
+    }
+    return false;
+  }
+
+  isDateSelectedValid(day: number, month: number, year: number): Boolean {
+    const dateSelected: Date = new Date(year, month, day);
+    if (dateSelected >= this.currentDate) {
+      return true;
+    }
+    return false;
+  }
+
   async selectDaysInCalendar(items: Array<any>): Promise<void> {
     if (items[0] !== undefined) {
       let totalPrice: number = 0;
@@ -115,10 +192,6 @@ export class PrimeCalendarComponent implements OnInit {
       });
 
       this.selectedDates = items[0].month + '/' + items[0].day + '/' + items[0].year + ' - ' + items[items.length - 1].month + '/' + items[items.length - 1].day + '/' + items[items.length - 1].year
-
-      const firstDaySelectedName: string = "year_" + items[0].year + "_month_" + items[0].month + "_day_" + items[0].day + "_property_" + items[0].property.id;
-      const dayElement: HTMLElement = document.getElementById(firstDaySelectedName)!;
-
       this.numberOfNights = orderedDays.length;
 
       orderedDays.map((item: any) => {
@@ -197,6 +270,40 @@ export class PrimeCalendarComponent implements OnInit {
 
   clearFilters(): void {
     this.propertiesToRenderHTML = this.properties;
+  }
+
+  confirmNewReservation(): void {
+    if (!this.customerOfReservation) {
+      document.getElementById('select-customer-error')!.style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('select-customer-error')!.style.display = 'none';
+      }, 3000);
+    }
+
+    const newReservation: ReservationInterface = {
+      property: [],
+      customer: this.customerOfReservation!,
+      numberOfNights: this.numberOfNights,
+      totalPrice: this.totalPriceSelectedDays,
+      description: this.descriptionOfNewReservation,
+      checkIn: new Date().toString(),
+      checkOut: new Date().toString(),
+      dates: []
+    };
+    window.alert('Reservation created successfully!');
+  }
+
+  cancelNewReservation(): void {
+    this.viewRightSidebar = false;
+    this.customerOfReservation = {} as CustomerInterface;
+    this.numberOfNights = 0;
+    this.totalPriceSelectedDays = 0;
+    this.descriptionOfNewReservation = '';
+  }
+
+  toViewRightSidebar(): void {
+    this.viewRightSidebar = true;
+    this.scrollService.determineScroll('calendar-content');
   }
 
 }

@@ -23,4 +23,8 @@ export class DateServiceService {
     const date: Date = new Date(year, month, 1);
     return months[date.getMonth()];
   }
+
+  getNumberOfDaysInMonth(month: number, year: number): number {
+    return new Date(year, month, 0).getDate();
+  }
 }
